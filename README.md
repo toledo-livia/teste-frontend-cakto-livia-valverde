@@ -41,7 +41,7 @@ O código é escrito em **React + TypeScript + Next.js**, usando TailwindCSS par
 
 ## 🌍 Deploy Online
 
-[Link para versão online]()
+[Link para versão online](https://teste-frontend-cakto-livia-valverde.vercel.app/)
 
 ---
 
