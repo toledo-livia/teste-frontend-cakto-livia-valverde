@@ -6,9 +6,12 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Checkout",
-  description: "Página de checkout estilizada com tema claro/escuro",
+export const metadata = {
+  title: "Pagamento Ágil | Marketing Digital Profissional | Cakto Pay",
+  description: "Checkout simples e rápido",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

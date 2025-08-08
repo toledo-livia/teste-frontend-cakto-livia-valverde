@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react"; // Se estiver usando ícones (opcional)
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -11,13 +12,19 @@ export default function ThemeToggle() {
 
   if (!mounted) return null;
 
+  const isDark = theme === "dark";
+
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-105 transition"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className={`p-2 rounded-full border transition hover:ring-2 ${
+        isDark
+          ? "bg-dark-surface text-neon-green border-neon-green hover:ring-neon-green"
+          : "bg-white text-gray-800 border-gray-300 hover:ring-gray-400"
+      }`}
       aria-label="Alternar tema claro e escuro"
     >
-      {theme === "dark" ? "☀️" : "🌙"}
+      {isDark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
 }

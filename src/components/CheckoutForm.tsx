@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import OrderSummary from "./OrderSummary";
 import { maskCPF, validateCPF } from "@/lib/validateCPF";
+import PaymentMethod from './PaymentMethod';
+import LoadingButton from "@/components/LoadingButton";
+import InstallmentsSelect from './InstallmentsSelect';
+import OrderSummary from "./OrderSummary";
 
 interface Product {
   id: number;
@@ -24,7 +27,6 @@ export default function CheckoutForm({ product }: CheckoutFormProps) {
   const [cpfError, setCpfError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"pix" | "card">("pix");
   const [installments, setInstallments] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -42,26 +44,12 @@ export default function CheckoutForm({ product }: CheckoutFormProps) {
     }
   };
 
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPaymentMethod(e.target.value as "pix" | "card");
-    if (e.target.value === "pix") {
-      setInstallments(1);
-    }
-  };
-
-  const handleInstallmentsChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setInstallments(Number(e.target.value));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cpfError) return;
 
-    setIsLoading(true);
     await new Promise((r) => setTimeout(r, 2000));
-    setIsLoading(false);
 
     alert("Compra finalizada com sucesso!");
   };
@@ -116,56 +104,16 @@ export default function CheckoutForm({ product }: CheckoutFormProps) {
         {cpfError && <p className="text-red-500 text-sm mt-1">{cpfError}</p>}
       </div>
 
-      <fieldset className="space-y-2 mt-6">
-        <legend className="font-semibold text-gray-900 dark:text-gray-100">
-          Método de Pagamento
-        </legend>
-
-        <label className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
-          <input
-            type="radio"
-            name="paymentMethod"
-            value="pix"
-            checked={paymentMethod === "pix"}
-            onChange={handlePaymentChange}
-            className="accent-blue-600"
-          />
-          <span>PIX (Taxa 0% 🔥)</span>
-        </label>
-
-        <label className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
-          <input
-            type="radio"
-            name="paymentMethod"
-            value="card"
-            checked={paymentMethod === "card"}
-            onChange={handlePaymentChange}
-            className="accent-blue-600"
-          />
-          <span>Cartão</span>
-        </label>
-
-        {paymentMethod === "card" && (
-          <div className="mt-2">
-            <label htmlFor="installments" className="block font-semibold mb-1">
-              Parcelas
-            </label>
-            <select
-              id="installments"
-              name="parcelas"
-              value={installments}
-              onChange={handleInstallmentsChange}
-              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition"
-            >
-              {[...Array(12)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1}x
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-      </fieldset>
+      <PaymentMethod
+        metodo={paymentMethod}
+        setMetodo={setPaymentMethod}
+      />
+      {paymentMethod === "card" && (
+        <InstallmentsSelect
+          parcelas={installments}
+          setParcelas={setInstallments}
+        />
+      )}
 
       <OrderSummary
         productName={product.name}
@@ -174,17 +122,9 @@ export default function CheckoutForm({ product }: CheckoutFormProps) {
         installments={installments}
       />
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className={`w-full py-3 rounded-lg shadow transition text-white ${
-          isLoading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-700"
-        }`}
-      >
-        {isLoading ? "Processando..." : "Finalizar Compra 🚀"}
-      </button>
+       <LoadingButton onClick={handleSubmit}>
+        Finalizar Compra 🚀
+      </LoadingButton>
     </form>
   );
 }
