@@ -20,6 +20,7 @@ export default function LoadingButton({
   return (
     <button
       {...props}
+      type="submit"
       onClick={handleClick}
       disabled={loading}
       className={`
